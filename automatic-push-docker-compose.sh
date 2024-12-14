@@ -5,3 +5,9 @@ git add -u
 git commit -m "automatic push"
 git push
 popd
+
+pushd ~/Server-scripts
+git add .
+git commit -m "automatic push"
+git push
+popd
