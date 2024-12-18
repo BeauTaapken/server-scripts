@@ -9,7 +9,7 @@ COOKIES=$(curl -c - --request POST \
 	"password": "'$PASSWORD'"
 }')
 
-INVOICE=$(curl -c ./temp.cookie --cookie <(echo "$COOKIES") --request GET \
+INVOICE=$(curl -c ${CURDIR}/temp.cookie --cookie <(echo "$COOKIES") --request GET \
   --url https://mijn.simpel.nl/api/invoice/latest?sid=$SID \
   --header 'Content-Type: application/json' | jq '.[0]')
 
@@ -31,10 +31,7 @@ INVOICE_FILE=invoice-${INVOICE_DATE}.pdf
 curl --cookie <(echo "$COOKIE") \
   "https://mijn.simpel.nl/facturen/${INVOICE_ID}/pdf?sid=${SID}" > ${CURDIR}/${INVOICE_FILE}
 
-#TODO: upload to BonusTool with api (set fields correctly and stuff)
-
 FORMATTED_DATE=$(date -d "${INVOICE_DATE}" +%F)
-
 
 EXPENSE_ID=$(curl --request POST \
   --url "https://bonus.giantfox.nl/api/expenses" \
