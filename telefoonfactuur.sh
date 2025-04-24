@@ -43,7 +43,7 @@ EXPENSE_ID=$(curl --request POST \
   -F "receipt=@${CURDIR}/${INVOICE_FILE}" \
   -F "date=${FORMATTED_DATE}" | jq '.id')
 
-rm ./invoice-*
+rm -f ./invoice*.pdf
 
 curl --request POST \
   --url "https://bonus.giantfox.nl/api/expenses/${EXPENSE_ID}/submit" \
