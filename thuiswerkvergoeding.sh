@@ -10,9 +10,9 @@ soffice --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
 TOTAL_PRICE=$(awk -F, 'NR==2 && $4  != "" {print $4}' ${CURDIR}/${FILE_NAME}.csv)
 
-#rm ${CURDIR}/${FILE_NAME}.csv
+rm ${CURDIR}/${FILE_NAME}.csv
 
-# NOTE: why last month? this code is run in a cronjob after the month is finished but uploading driven KM's of last month
+# NOTE: why last month? this code is run in a cronjob after the month is finished but uploading of last month
 LAST_MONTH=$(date +%m-%Y --date="last month")
 
 EXPENSE_ID=$(curl -v --request POST \
