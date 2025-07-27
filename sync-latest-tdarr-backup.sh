@@ -1,10 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
 
 CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
-pushd ~/Server
-BACKUP_DIR="./config/tdarr/server/Tdarr/Backups"
+REPO_DIR="/home/beau/Server"
+BACKUP_DIR="$REPO_DIR/config/tdarr/server/Tdarr/Backups"
 
 cd "$BACKUP_DIR" || exit 1
 
@@ -28,20 +29,6 @@ for file in $all_tracked_backups; do
   fi
 done
 
-git add -f "BACKUP_DIR/$latest_backup"
-git add -u
-git commit -m "automatic push"
+git add -f "$BACKUP_DIR/$latest_backup"
+git commit -m "Add latest Tdarr backup: $latest_backup"
 git push
-popd
-
-pushd ~/Server-scripts
-git add .
-git commit -m "automatic push"
-git push
-popd
-
-config='/usr/bin/git --git-dir=/home/beau/.cfg/ --work-tree=/home/beau'
-
-$config add -u
-$config commit -m "automatic push"
-$config push -u origin main
