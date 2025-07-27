@@ -4,7 +4,7 @@ CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
 pushd ~/Server
-BACKUP_DIR="./config/tdarr/server/Tdarr/Backups"
+BACKUP_DIR="/home/beau/Server/config/tdarr/server/Tdarr/Backups"
 
 cd "$BACKUP_DIR" || exit 1
 
