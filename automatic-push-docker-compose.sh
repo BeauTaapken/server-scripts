@@ -28,7 +28,7 @@ for file in $all_tracked_backups; do
   fi
 done
 
-git add -f "BACKUP_DIR/$latest_backup"
+git add -f "$BACKUP_DIR/$latest_backup"
 git add -u
 git commit -m "automatic push"
 git push
