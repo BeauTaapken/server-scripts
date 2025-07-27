@@ -6,7 +6,7 @@ source ${CURDIR}/.env
 pushd ~/Server
 BACKUP_DIR="/home/beau/Server/config/tdarr/server/Tdarr/Backups"
 
-cd "$BACKUP_DIR" || exit 1
+pushd $BACKUP_DIR
 
 latest_backup=$(ls -t | grep -v / | head -n 1)
 
@@ -27,6 +27,8 @@ for file in $all_tracked_backups; do
     git rm --cached "$file"
   fi
 done
+
+popd
 
 git add -f "$BACKUP_DIR/$latest_backup"
 git add -u
