@@ -21,12 +21,12 @@ zip -j -P "$ZIP_PASSWORD" "$temp_zip" "$latest_backup"
 
 mv "$temp_zip" "$latest_backup"
 
-all_tracked_backups=$(git ls-files "$BACKUP_DIR")
-for file in $all_tracked_backups; do
-  if [[ "$(basename "$file")" != "$latest_backup" ]]; then
-    git rm --cached "$file"
-  fi
-done
+#all_tracked_backups=$(git ls-files "$BACKUP_DIR")
+#for file in $all_tracked_backups; do
+#  if [[ "$(basename "$file")" != "$latest_backup" ]]; then
+#    git rm --cached "$file"
+#  fi
+#done
 
 popd
 
