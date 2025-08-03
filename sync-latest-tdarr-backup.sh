@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
@@ -28,7 +27,7 @@ for file in $all_tracked_backups; do
     git rm --cached "$file"
   fi
 done
-popd
 
 git add -f "$BACKUP_DIR/$latest_backup"
 git commit -m "Add latest Tdarr backup: $latest_backup"
+popd
