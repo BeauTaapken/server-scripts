@@ -3,13 +3,13 @@
 CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
-pushd ~/Server
 ./sync-lastest-tdarr-backup.sh
-popd
 
+pushd ~/Server
 git add -u
 git commit -m "automatic push"
 git push
+popd
 
 pushd ~/Server-scripts
 git add .
