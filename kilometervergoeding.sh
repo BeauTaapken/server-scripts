@@ -4,9 +4,9 @@ source ${CURDIR}/.env
 FILE_LOCATION=${CURDIR}
 FILE_NAME=Gereden-KMs
 
-soffice --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
+soffice --headless --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
-soffice --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
+soffice --headless --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
 TOTAL_PRICE=$(awk -F',' 'NR > 1 && $5 != "" {print $5}' ${CURDIR}/${FILE_NAME}.csv)
 
@@ -21,7 +21,7 @@ EXPENSE_ID=$(curl -v --request POST \
   -H 'Content-Type: multipart/form-data' \
   -F "description=Kilometers ${LAST_MONTH}" \
   -F "amount=${TOTAL_PRICE}" \
-  -F "company=Tango" \
+  -F "company=Adabtive" \
   -F "receipt=@${CURDIR}/${FILE_NAME}.pdf" \
   -F "date=$(date +%d-%m-%Y)" | jq '.id')
 

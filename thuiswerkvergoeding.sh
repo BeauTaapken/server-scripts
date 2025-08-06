@@ -4,9 +4,9 @@ source ${CURDIR}/.env
 FILE_LOCATION=${CURDIR}
 FILE_NAME=Thuiswerk
 
-soffice --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
+soffice --headless --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
-soffice --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
+soffice --headless --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
 TOTAL_PRICE=$(awk -F, 'NR==2 && $4  != "" {print $4}' ${CURDIR}/${FILE_NAME}.csv)
 
