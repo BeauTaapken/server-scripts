@@ -1,4 +1,4 @@
-CURDIR=$(dirname "$0")
+CURDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source ${CURDIR}/.env
 
 COOKIES=$(curl -c - --request POST \
