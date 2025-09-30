@@ -1,2 +1,2 @@
 cd ~/Server
-docker compose -f ./cisco-fantasy-medieval-rpg.yml down
+docker compose -f ./reclamation.yml down

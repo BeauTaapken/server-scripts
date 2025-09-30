@@ -1,3 +1,3 @@
 cd ~/Server
-docker compose -f ./cisco-fantasy-medieval-rpg.yml up -d
+docker compose -f ./reclamation.yml up -d
 
