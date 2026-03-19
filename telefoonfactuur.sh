@@ -1,25 +1,31 @@
 CURDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source ${CURDIR}/.env
 
-COOKIES=$(curl -c - --request POST \
-  --url https://api.simpel.nl/login \
-  --header 'Content-Type: application/json' \
-  -d '{
-	"username": "'$USERNAME'",
-	"password": "'$PASSWORD'"
-}')
+response=$(curl -D - -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Referer: https://my.youfone.nl/inloggen' \
+  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\"}" \
+  https://my.youfone.nl/api/prov/authentication/login)
 
-INVOICE=$(curl -c ${CURDIR}/temp.cookie --cookie <(echo "$COOKIES") --request GET \
-  --url https://mijn.simpel.nl/api/invoice/latest?sid=$SID \
-  --header 'Content-Type: application/json' | jq '.[0]')
+SECURITY_KEY=$(echo "$response" | grep -i '^securitykey:' | awk '{print $2}')
+CUSTOMER_ID=$(echo "$response" | grep -o '"customerId": *[0-9]*' | grep -o '[0-9]*')
 
-COOKIE=$(cat ${CURDIR}/temp.cookie)
+INVOICES=$(curl -D ${CURDIR}/headers.txt -X POST \
+	-H 'Content-Type: application/json' \
+	-H 'Referer: https://my.youfone.nl/facturen/sim-only' \
+	-H "SecurityKey: $SECURITY_KEY" \
+	-d "{\"customerId\":$CUSTOMER_ID}" \
+	https://my.youfone.nl/api/prov/Invoice/GetInvoices)
 
-rm ${CURDIR}/temp.cookie
+SECURITY_KEY=$(grep -i '^securitykey:' ${CURDIR}/headers.txt | awk '{print $2}')
 
-INVOICE_ID=$(echo "$INVOICE" | jq -r '.number')
-INVOICE_DATE=$(echo "$INVOICE" | jq -r '.invoiceDate')
-INVOICE_PRICE=$(echo "$INVOICE" | jq -r '.amount + .extraAmount')
+rm ${CURDIR}/headers.txt
+
+LATEST_INVOICE=$(echo $INVOICES | jq -r '.invoices' | jq -r 'sort_by(.date | split("T")[0]) | reverse | .[0]')
+
+INVOICE_NUMBER=$(echo "$LATEST_INVOICE" | jq -r '.number')
+INVOICE_DATE=$(echo "$LATEST_INVOICE" | jq -r '.date')
+INVOICE_PRICE=$(echo "$LATEST_INVOICE" | jq -r '.amount')
 
 if [[ "$(date -d "$INVOICE_DATE" +%Y)" != "$(date +%Y)" || "$(date -d "$INVOICE_DATE" +%m)" != "$(date +%m)" ]]; then
   echo "Found an invoice, not of this month though"
@@ -28,12 +34,20 @@ fi
 
 INVOICE_FILE=invoice-${INVOICE_DATE}.pdf
 
-curl --cookie <(echo "$COOKIE") \
-  "https://mijn.simpel.nl/facturen/${INVOICE_ID}/pdf?sid=${SID}" > ${CURDIR}/${INVOICE_FILE}
+INVOICE_DATA=$(curl -X POST \
+	-H 'Content-Type: application/json' \
+	-H 'Referer: https://my.youfone.nl/facturen/sim-only' \
+	-H "SecurityKey: $SECURITY_KEY" \
+	-d "{\"customerId\":$CUSTOMER_ID,\"invoiceNumber\":\"$INVOICE_NUMBER\"}" \
+	https://my.youfone.nl/api/prov/Pdf/GetInvoice \
+	| jq -r '.content' \
+	| base64 -d > ${CURDIR}/${INVOICE_FILE})
+
+qpdf --decrypt ${CURDIR}/${INVOICE_FILE} --replace-input
 
 FORMATTED_DATE=$(date -d "${INVOICE_DATE}" +%F)
 
-EXPENSE_ID=$(curl --request POST \
+EXPENSE_ID=$(curl -X POST \
   --url "https://bonus.giantfox.nl/api/expenses" \
   -H "Authorization: Bearer ${API_KEY}"\
   -H 'Content-Type: multipart/form-data' \
@@ -47,5 +61,4 @@ rm -f ${CURDIR}/invoice*.pdf
 
 curl --request POST \
   --url "https://bonus.giantfox.nl/api/expenses/${EXPENSE_ID}/submit" \
-  -H "Authorization: Bearer ${API_KEY}"
-
+  -H "Authorization: Bearer ${API_KEY}" >/dev/null 2>&1
