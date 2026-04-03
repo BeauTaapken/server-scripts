@@ -51,9 +51,9 @@ EXPENSE_ID=$(curl -X POST \
   --url "https://bonus.giantfox.nl/api/expenses" \
   -H "Authorization: Bearer ${API_KEY}"\
   -H 'Content-Type: multipart/form-data' \
-  -F "description=Simpel Invoice ${INVOICE_DATE}" \
+  -F "description=Youfone Invoice ${INVOICE_DATE}" \
   -F "amount=${INVOICE_PRICE}" \
-  -F "company=Simpel" \
+  -F "company=Youfone" \
   -F "receipt=@${CURDIR}/${INVOICE_FILE}" \
   -F "date=${FORMATTED_DATE}" | jq '.id')
 
