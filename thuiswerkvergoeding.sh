@@ -10,6 +10,10 @@ soffice --headless --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir $
 
 TOTAL_PRICE=$(awk -F, 'NR==2 && $4  != "" {print $4}' ${CURDIR}/${FILE_NAME}.csv)
 
+if awk -v val="$TOTAL_PRICE" 'BEGIN{exit !(val == 0)}'; then
+  exit 1
+fi
+
 rm ${CURDIR}/${FILE_NAME}.csv
 
 # NOTE: why last month? this code is run in a cronjob after the month is finished but uploading of last month
