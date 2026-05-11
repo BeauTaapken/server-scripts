@@ -22,6 +22,11 @@ if [ "$CURRENT_IP" != "$LAST_IP" ]; then
   	    ]
 	}
 JSON
+
+    docker exec crowdsec cscli allowlist remove "Home Network" $LAST_IP
+
+    docker exec crowdsec cscli allowlist add "Home Network" $CURRENT_IP
+
 fi
 
 if [ $? -eq 0 ]; then
