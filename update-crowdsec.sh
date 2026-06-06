@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 
-CONTAINER_NAME="crowdsec"  # Adjust to your container name
-DOCKER_BIN="/usr/bin/docker"  # Adjust path if needed
-GREP_BIN="/usr/bin/grep"  # Adjust path if needed
+CONTAINER_NAME="crowdsec"
+DOCKER_BIN="/usr/bin/docker"
+GREP_BIN="/usr/bin/grep"
 
 # Check if container is running
 if ! $DOCKER_BIN ps --format "table {{.Names}}" | $GREP_BIN -q "^${CONTAINER_NAME}$"; then

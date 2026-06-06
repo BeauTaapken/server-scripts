@@ -7,8 +7,6 @@ IP_FILE=${CURDIR}/.last_ip
 CURRENT_IP=$(curl https://ipinfo.io/ip)
 LAST_IP=$(cat "$IP_FILE" 2>/dev/null || echo "")
 
-echo $TOKEN
-
 if [ "$CURRENT_IP" != "$LAST_IP" ]; then
     curl --location --request PUT "https://mijn.host/api/v2/domains/$DOMAIN/dns" \
     	--header 'Accept: application/json' \
