@@ -3,6 +3,8 @@
 CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
+HOME_NETWORK="Home Network"
+
 IP_FILE=${CURDIR}/.last_ip
 CURRENT_IP=$(curl https://ipinfo.io/ip)
 LAST_IP=$(cat "$IP_FILE" 2>/dev/null || echo "")
