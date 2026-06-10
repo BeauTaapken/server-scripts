@@ -28,7 +28,7 @@ EXPENSE_ID=$(curl -v --request POST \
   -H 'Content-Type: multipart/form-data' \
   -F "description=Kilometers ${LAST_MONTH}" \
   -F "amount=${TOTAL_PRICE}" \
-  -F "company=Adabtive" \
+  -F "company=UvA" \
   -F "receipt=@${CURDIR}/${FILE_NAME}.pdf" \
   -F "date=$(date +%d-%m-%Y)" | jq '.id')
 
