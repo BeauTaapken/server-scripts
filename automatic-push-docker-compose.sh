@@ -3,7 +3,7 @@
 CURDIR=$(dirname "$0")
 source ${CURDIR}/.env
 
-$CURDIR/sync-latest-tdarr-backup.sh
+$CURDIR/sync-latest-backups.sh
 
 pushd ~/Server
 git add -u
