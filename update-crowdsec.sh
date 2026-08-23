@@ -5,6 +5,7 @@ CONTAINER_NAME="crowdsec"
 DOCKER_BIN="/usr/bin/docker"
 GREP_BIN="/usr/bin/grep"
 
+
 # Check if container is running
 if ! $DOCKER_BIN ps --format "table {{.Names}}" | $GREP_BIN -q "^${CONTAINER_NAME}$"; then
     echo "Container ${CONTAINER_NAME} is not running"
@@ -19,6 +20,10 @@ if [ -n "$upgraded" ]; then
     echo "Hub updates detected, restarting container..."
     $DOCKER_BIN restart ${CONTAINER_NAME}
     echo "Container restarted successfully"
+
+    HOME_NETWORK="Home Network"
+    CURRENT_IP=$(cat ${CURDIR}/.last_ip)
+    docker exec crowdsec cscli allowlist add $HOME_NETWORK $CURRENT_IP
 else
     echo "No hub updates available"
 fi
