@@ -8,6 +8,11 @@ soffice --headless --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"strin
 
 soffice --headless --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
+while [ ! -f ${FILE_LOCATION}/${FILE_NAME}.csv ]
+do
+  sleep 1
+done
+
 TOTAL_PRICE=$(awk -F',' 'NR > 1 && $5 != "" {print $5}' ${CURDIR}/${FILE_NAME}.csv)
 
 if awk -v val="$TOTAL_PRICE" 'BEGIN{exit !(val == 0)}'; then
