@@ -4,8 +4,6 @@ source ${CURDIR}/.env
 FILE_LOCATION=${CURDIR}
 FILE_NAME=Gereden-KMs
 
-soffice --headless --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
-
 soffice --headless --convert-to csv ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
 
 while [ ! -f ${FILE_LOCATION}/${FILE_NAME}.csv ]
@@ -13,19 +11,23 @@ do
   sleep 1
 done
 
+soffice --headless --convert-to 'pdf:draw_pdf_Export:{"PageRange":{"type":"string","value":"1"}}' ${FILE_LOCATION}/${FILE_NAME}.ods --outdir ${CURDIR}
+
 TOTAL_PRICE=$(awk -F',' 'NR > 1 && $5 != "" {print $5}' ${CURDIR}/${FILE_NAME}.csv)
 
 if awk -v val="$TOTAL_PRICE" 'BEGIN{exit !(val == 0)}'; then
-  echo "no price"
   exit 1
 fi
-
-echo "price"
 
 rm ${CURDIR}/${FILE_NAME}.csv
 
 # NOTE: why last month? this code is run in a cronjob after the month is finished but uploading driven KM's of last month
 LAST_MONTH=$(date +%m-%Y --date="last month")
+
+while [ ! -f ${FILE_LOCATION}/${FILE_NAME}.pdf ]
+do
+  sleep 1
+done
 
 EXPENSE_ID=$(curl -v --request POST \
   --url "https://bonus.giantfox.nl/api/expenses" \

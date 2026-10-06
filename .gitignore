@@ -1,3 +1,5 @@
 .env
 .last_ip
 *.ods
+*.csv
+*.pdf
